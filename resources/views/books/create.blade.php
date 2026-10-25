@@ -17,33 +17,32 @@
         </ul>
     @endif
 
-    <form action="{{ route('books.store') }}" method="POST">
+    <form action="{{ route('books.store') }}" method="POST" novalidate>
         @csrf
 
         <label>Judul Buku:</label><br>
-        <input type="text" name="judul"
-               value="{{ old('judul') }}" required>
+        <input type="text" name="title"
+            value="{{ old('title') }}">
         <br><br>
 
         <label>Penulis:</label><br>
-        <input type="text" name="penulis"
-               value="{{ old('penulis') }}" required>
+        <input type="text" name="author"
+            value="{{ old('author') }}">
         <br><br>
 
         <label>Penerbit:</label><br>
-        <input type="text" name="penerbit"
-               value="{{ old('penerbit') }}">
+        <input type="text" name="publisher"
+            value="{{ old('publisher') }}">
         <br><br>
 
         <label>Tahun Terbit:</label><br>
-        <input type="number" name="tahun_terbit"
-               min="1900" max="{{ date('Y') }}"
-               value="{{ old('tahun_terbit') }}">
+        <input type="number" name="year"
+            value="{{ old('year') }}">
         <br><br>
 
         <label>Stok Buku:</label><br>
-        <input type="number" name="stok"
-               min="0" value="{{ old('stok', 0) }}" required>
+        <input type="number" name="stock"
+            value="{{ old('stock', 0) }}">
         <br><br>
 
         <button type="submit">Simpan Buku</button>

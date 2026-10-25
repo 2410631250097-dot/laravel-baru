@@ -29,25 +29,27 @@
                 <th>Aksi</th>
             </tr>
         </thead>
+
         <tbody>
             @forelse ($books as $book)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $book->judul }}</td>
-                    <td>{{ $book->penulis }}</td>
-                    <td>{{ $book->penerbit }}</td>
-                    <td>{{ $book->tahun_terbit }}</td>
-                    <td>{{ $book->stok }}</td>
+                    <td>{{ $book->title }}</td>
+                    <td>{{ $book->author }}</td>
+                    <td>{{ $book->publisher ?? '-' }}</td>
+                    <td>{{ $book->year ?? '-' }}</td>
+                    <td>{{ $book->stock }}</td>
                     <td>
                         <a href="{{ route('books.show', $book->id) }}">Detail</a>
                         |
                         <a href="{{ route('books.edit', $book->id) }}">Edit</a>
 
                         <form action="{{ route('books.destroy', $book->id) }}"
-                              method="POST"
-                              style="display:inline;">
+                            method="POST"
+                            style="display:inline;">
                             @csrf
                             @method('DELETE')
+
                             <button type="submit"
                                 onclick="return confirm('Yakin ingin menghapus buku ini?')">
                                 Hapus

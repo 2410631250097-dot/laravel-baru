@@ -9,15 +9,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('books', function (Blueprint $table) {
-            $table->id();
-            $table->string('judul');
-            $table->string('penulis');
-            $table->string('penerbit')->nullable();
-            $table->year('tahun_terbit')->nullable();
-            $table->integer('stok')->default(0);
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('books')) {
+            Schema::create('books', function (Blueprint $table) {
+                $table->id();
+                $table->string('title');
+                $table->string('author');
+                $table->string('publisher')->nullable();
+                $table->year('year')->nullable();
+                $table->integer('stock')->default(0);
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void
