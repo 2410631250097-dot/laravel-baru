@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
+    // Menampilkan daftar buku beserta kategorinya
     public function index()
     {
         $books = Book::with('category')->get();
@@ -15,6 +16,7 @@ class BookController extends Controller
         return view('books.index', compact('books'));
     }
 
+    // Menampilkan form tambah buku
     public function create()
     {
         $title = 'Tambah Buku';
@@ -23,6 +25,7 @@ class BookController extends Controller
         return view('books.create', compact('title', 'categories'));
     }
 
+    // Menyimpan buku baru dengan validasi kategori
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -31,7 +34,7 @@ class BookController extends Controller
             'publisher' => 'nullable|string|max:255',
             'year' => 'nullable|integer|min:1900|max:' . date('Y'),
             'stock' => 'required|integer|min:0',
-            'category_id' => 'nullable|integer|exists:categories,id',
+            'category_id' => 'required|integer|exists:categories,id',
         ]);
 
         Book::create($validated);
@@ -41,19 +44,25 @@ class BookController extends Controller
             ->with('success', 'Buku berhasil ditambahkan.');
     }
 
+    // Menampilkan detail buku
     public function show(Book $book)
     {
         return view('books.show', compact('book'));
     }
 
+    // Menampilkan form edit buku beserta pilihan kategori
     public function edit(Book $book)
     {
         $title = 'Edit Buku';
         $categories = Category::orderBy('name')->get();
 
-        return view('books.edit', compact('title', 'book', 'categories'));
+        return view(
+            'books.edit',
+            compact('title', 'book', 'categories')
+        );
     }
 
+    // Memperbarui buku dengan validasi kategori
     public function update(Request $request, Book $book)
     {
         $validated = $request->validate([
@@ -62,7 +71,7 @@ class BookController extends Controller
             'publisher' => 'nullable|string|max:255',
             'year' => 'nullable|integer|min:1900|max:' . date('Y'),
             'stock' => 'required|integer|min:0',
-            'category_id' => 'nullable|integer|exists:categories,id',
+            'category_id' => 'required|integer|exists:categories,id',
         ]);
 
         $book->update($validated);
@@ -72,6 +81,7 @@ class BookController extends Controller
             ->with('success', 'Data buku berhasil diperbarui.');
     }
 
+    // Menghapus buku
     public function destroy(Book $book)
     {
         $book->delete();

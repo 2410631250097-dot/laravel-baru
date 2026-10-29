@@ -10,7 +10,9 @@
     <h1>Daftar Buku</h1>
 
     @if (session('success'))
-        <p style="color: green;">{{ session('success') }}</p>
+        <p style="color: green;">
+            {{ session('success') }}
+        </p>
     @endif
 
     <a href="{{ route('books.create') }}">+ Tambah Buku</a>
@@ -26,6 +28,7 @@
                 <th>Penerbit</th>
                 <th>Tahun Terbit</th>
                 <th>Stok</th>
+                <th>Kategori</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -39,19 +42,32 @@
                     <td>{{ $book->publisher ?? '-' }}</td>
                     <td>{{ $book->year ?? '-' }}</td>
                     <td>{{ $book->stock }}</td>
-                    <td>
-                        <a href="{{ route('books.show', $book->id) }}">Detail</a>
-                        |
-                        <a href="{{ route('books.edit', $book->id) }}">Edit</a>
 
-                        <form action="{{ route('books.destroy', $book->id) }}"
+                    <td>
+                        {{ $book->category?->name ?? 'Belum ada kategori' }}
+                    </td>
+
+                    <td>
+                        <a href="{{ route('books.show', $book->id) }}">
+                            Detail
+                        </a>
+                        |
+                        <a href="{{ route('books.edit', $book->id) }}">
+                            Edit
+                        </a>
+
+                        <form
+                            action="{{ route('books.destroy', $book->id) }}"
                             method="POST"
-                            style="display:inline;">
+                            style="display: inline;"
+                        >
                             @csrf
                             @method('DELETE')
 
-                            <button type="submit"
-                                onclick="return confirm('Yakin ingin menghapus buku ini?')">
+                            <button
+                                type="submit"
+                                onclick="return confirm('Yakin ingin menghapus buku ini?')"
+                            >
                                 Hapus
                             </button>
                         </form>
@@ -59,10 +75,11 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7">Belum ada data buku.</td>
+                    <td colspan="8">Belum ada data buku.</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
 </body>
 </html>
+```
