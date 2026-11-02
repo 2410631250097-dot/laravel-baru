@@ -4,82 +4,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Buku</title>
+    <title>Daftar Buku - Perpustakaan</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 9px 14px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-add {
+            background: #2563eb;
+        }
+
+        .btn-edit {
+            background: #e6a23c;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+        }
+
+        .btn-logout {
+            background: #6c757d;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .actions form {
+            margin: 0;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Daftar Buku</h1>
+    <div class="container">
 
-    @if (session('success'))
-        <p style="color: green;">
-            {{ session('success') }}
-        </p>
-    @endif
+        <div class="header">
+            <h2>Daftar Buku</h2>
 
-    <a href="{{ route('books.create') }}">+ Tambah Buku</a>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-logout">
+                    Logout
+                </button>
+            </form>
+        </div>
 
-    <br><br>
+        <a href="{{ route('books.create') }}" class="btn btn-add">
+            + Tambah Buku
+        </a>
 
-    <table border="1" cellpadding="10" cellspacing="0">
-        <thead>
-            <tr>
-                <th>No.</th>
-                <th>Judul</th>
-                <th>Penulis</th>
-                <th>Penerbit</th>
-                <th>Tahun Terbit</th>
-                <th>Stok</th>
-                <th>Kategori</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @forelse ($books as $book)
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $book->title }}</td>
-                    <td>{{ $book->author }}</td>
-                    <td>{{ $book->publisher ?? '-' }}</td>
-                    <td>{{ $book->year ?? '-' }}</td>
-                    <td>{{ $book->stock }}</td>
-
-                    <td>
-                        {{ $book->category?->name ?? 'Belum ada kategori' }}
-                    </td>
-
-                    <td>
-                        <a href="{{ route('books.show', $book->id) }}">
-                            Detail
-                        </a>
-                        |
-                        <a href="{{ route('books.edit', $book->id) }}">
-                            Edit
-                        </a>
-
-                        <form
-                            action="{{ route('books.destroy', $book->id) }}"
-                            method="POST"
-                            style="display: inline;"
-                        >
-                            @csrf
-                            @method('DELETE')
-
-                            <button
-                                type="submit"
-                                onclick="return confirm('Yakin ingin menghapus buku ini?')"
-                            >
-                                Hapus
-                            </button>
-                        </form>
-                    </td>
+                    <th>No</th>
+                    <th>Judul</th>
+                    <th>Penulis</th>
+                    <th>Penerbit</th>
+                    <th>Tahun Terbit</th>
+                    <th>Stok</th>
+                    <th>Kategori</th>
+                    <th>Aksi</th>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="8">Belum ada data buku.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+            </thead>
+
+            <tbody>
+                @forelse ($books as $book)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $book->title }}</td>
+                        <td>{{ $book->author }}</td>
+                        <td>{{ $book->publisher ?? '-' }}</td>
+                        <td>{{ $book->year }}</td>
+                        <td>{{ $book->stock }}</td>
+                        <td>
+                            {{ $book->category->name ?? 'Belum ada kategori' }}
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <a href="{{ route('books.edit', $book->id) }}"
+                                   class="btn btn-edit">
+                                    Edit
+                                </a>
+
+                                <form action="{{ route('books.destroy', $book->id) }}"
+                                      method="POST"
+                                      onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit" class="btn btn-delete">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" class="empty">
+                            Belum ada data buku.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+
+    </div>
 </body>
 </html>
-```
