@@ -62,6 +62,11 @@
             background: #6c757d;
         }
 
+        .btn-users {
+            background: #198754;
+            margin-bottom: 15px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -114,9 +119,19 @@
             </form>
         </div>
 
-        <a href="{{ route('books.create') }}" class="btn btn-add">
-            + Tambah Buku
-        </a>
+        {{-- Menu pengelolaan pengguna khusus Admin --}}
+        @can('manage-users')
+            <a href="{{ route('users.index') }}" class="btn btn-users">
+                Pengelolaan Pengguna
+            </a>
+        @endcan
+
+        {{-- Tombol tambah buku --}}
+        @can('create', \App\Models\Book::class)
+            <a href="{{ route('books.create') }}" class="btn btn-add">
+                + Tambah Buku
+            </a>
+        @endcan
 
         <table>
             <thead>
@@ -146,21 +161,29 @@
                         </td>
                         <td>
                             <div class="actions">
-                                <a href="{{ route('books.edit', $book->id) }}"
-                                   class="btn btn-edit">
-                                    Edit
-                                </a>
 
-                                <form action="{{ route('books.destroy', $book->id) }}"
-                                      method="POST"
-                                      onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
-                                    @csrf
-                                    @method('DELETE')
+                                {{-- Tombol edit --}}
+                                @can('update', $book)
+                                    <a href="{{ route('books.edit', $book->id) }}"
+                                       class="btn btn-edit">
+                                        Edit
+                                    </a>
+                                @endcan
 
-                                    <button type="submit" class="btn btn-delete">
-                                        Hapus
-                                    </button>
-                                </form>
+                                {{-- Tombol hapus khusus Admin --}}
+                                @can('delete', $book)
+                                    <form action="{{ route('books.destroy', $book->id) }}"
+                                          method="POST"
+                                          onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit" class="btn btn-delete">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                @endcan
+
                             </div>
                         </td>
                     </tr>
